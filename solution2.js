@@ -18,9 +18,21 @@ const courseSchema = new mongoose.Schema({
 const Course = mongoose.model("Course", courseSchema);
 
 async function getCourses() {
-  return await Course.find({ isPublished: true, tags: "frontend" })
-    .sort({ name: 1 }) //or ({'name'})for ascending and ({'-name'}) for descending
-    .select({ name: 1, author: 1 }); //or ({'name author'})
+  //USING MONGODB OPERATOR '$IN'
+  return await Course.find({
+    isPublished: true,
+    tags: { $in: ["frontend", "backend"] },
+  })
+    .sort({ price: -1 }) //or ({'price'})for ascending and ({'-price'}) for descending
+    .select({ name: 1, author: 1, price: 1 }); //or ({'name author, price'})
+
+  //USING 'OR' OPERATOR
+  //   return await Course.find({
+  //     isPublished: true,
+  //   })
+  //     .or([{ tags: "frontend" }, { tags: "backend" }])
+  //     .sort({ -price}) //or ({'price'})for ascending and ({'-price'}) for descending
+  //     .select({ name, author, price}); //or ({'name author, price'})
 
   return courses;
 }
